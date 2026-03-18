@@ -41,7 +41,7 @@
 💹价格有问题： 点击左上角P0查看核价链接，联系买手申诉。</div>
     </header>
     <div class="filter-section">
-        <input type="text" id="searchInput" placeholder="搜索标题/ID..." oninput="debouncedFilter()">
+        <input type="text" id="searchInput" placeholder="搜索标题/邀请ID" oninput="debouncedFilter()">
         <select id="l1Filter" onchange="updateL2(); applyFilters()"><option value="">二级类目(全部)</option></select>
         <select id="l2Filter" onchange="applyFilters()"><option value="">三级类目(全部)</option></select>
         <select id="pFilter" onchange="applyFilters()"><option value="">P0/P1(全部)</option><option value="P0">P0</option><option value="P1">P1</option></select>
