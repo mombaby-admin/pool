@@ -59,7 +59,7 @@
         <input type="text" id="searchInput" placeholder="搜索标题/邀请ID" oninput="debouncedFilter()">
         <select id="l1Filter" onchange="updateL2(); applyFilters()"><option value="">二级类目(全部)</option></select>
         <select id="l2Filter" onchange="applyFilters()"><option value="">三级类目(全部)</option></select>
-        <select id="pFilter" onchange="applyFilters()"><option value="">参考价依据(全部)</option><option value="P0">1688三档价</option><option value="P1">爆品竞价</option></select>
+        <select id="pFilter" onchange="applyFilters()"><option value="">参考价依据(全部)</option><option value="1688三档价">1688三档价</option><option value="爆品竞价">爆品竞价</option></select>
         <select id="tagFilter" onchange="applyFilters()"><option value="">更新时间(全部)</option></select>
         <!-- 新增：目标价格段筛选 -->
         <select id="priceRangeFilter" onchange="applyFilters()">
@@ -161,7 +161,7 @@ const mapData = (arr) => {
             const card = document.createElement('div');
             card.className = 'card';
 card.innerHTML = `
-    <div class="judge-tag ${item.judge === '1688三档价' ? 'bg-p0' : 'bg-p1'}" onclick="checkLink('${item.link1688}')">${item.judge}</div>
+    <div class="judge-tag ${item.judge === 'p0' ? 'bg-p0' : 'bg-p1'}" onclick="checkLink('${item.link1688}')">${item.judge}</div>
     ${item.specialTag ? `<div class="special-tag">${item.specialTag}</div>` : ''}
     <div class="img-container" ondblclick="document.getElementById('modalImg').src='${item.imgUrl}'; document.getElementById('imageModal').style.display='flex';">
         <img src="${item.imgUrl}" loading="lazy">
