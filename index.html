@@ -161,7 +161,7 @@ const mapData = (arr) => {
             const card = document.createElement('div');
             card.className = 'card';
 card.innerHTML = `
-    <div class="judge-tag ${item.judge === 'P0' ? 'bg-p0' : 'bg-p1'}" onclick="checkLink('${item.link1688}')">${item.judge}</div>
+    <div class="judge-tag ${item.judge === '1688三档价' ? 'bg-p0' : 'bg-p1'}" onclick="checkLink('${item.link1688}')">${item.judge}</div>
     ${item.specialTag ? `<div class="special-tag">${item.specialTag}</div>` : ''}
     <div class="img-container" ondblclick="document.getElementById('modalImg').src='${item.imgUrl}'; document.getElementById('imageModal').style.display='flex';">
         <img src="${item.imgUrl}" loading="lazy">
