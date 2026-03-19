@@ -59,7 +59,7 @@
         <input type="text" id="searchInput" placeholder="搜索标题/邀请ID" oninput="debouncedFilter()">
         <select id="l1Filter" onchange="updateL2(); applyFilters()"><option value="">二级类目(全部)</option></select>
         <select id="l2Filter" onchange="applyFilters()"><option value="">三级类目(全部)</option></select>
-        <select id="pFilter" onchange="applyFilters()"><option value="">P0/P1(全部)</option><option value="P0">P0</option><option value="P1">P1</option></select>
+        <select id="pFilter" onchange="applyFilters()"><option value="">参考价依据(全部)</option><option value="P0">P0</option><option value="P1">P1</option></select>
         <select id="tagFilter" onchange="applyFilters()"><option value="">更新时间(全部)</option></select>
         <!-- 新增：目标价格段筛选 -->
         <select id="priceRangeFilter" onchange="applyFilters()">
@@ -169,11 +169,11 @@ card.innerHTML = `
     <div class="info">
         <div class="title" title="${item.title}">${item.title}</div>
         <div class="price-variant-row">
-            <span class="price">¥${item.price}</span>
+            <span class="price">参考价¥${item.price}</span>
             <span class="variant" title="${item.variant}">${item.variant}</span>
         </div>
         <div class="invite-row">
-            <div class="model-count-tag">${item.modelCount}款</div>
+            <div class="model-count-tag">${item.modelCount}品</div>
             <div class="invite-id-box" onclick="navigator.clipboard.writeText('${item.inviteId}'); alert('已复制ID: ${item.inviteId}')">${item.inviteId}</div>
         </div>
         <div class="footer-row">
