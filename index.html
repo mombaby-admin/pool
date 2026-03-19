@@ -59,7 +59,7 @@
         <input type="text" id="searchInput" placeholder="搜索标题/邀请ID" oninput="debouncedFilter()">
         <select id="l1Filter" onchange="updateL2(); applyFilters()"><option value="">二级类目(全部)</option></select>
         <select id="l2Filter" onchange="applyFilters()"><option value="">三级类目(全部)</option></select>
-        <select id="pFilter" onchange="applyFilters()"><option value="">参考价依据(全部)</option><option value="P0">P0</option><option value="P1">P1</option></select>
+        <select id="pFilter" onchange="applyFilters()"><option value="">参考价依据(全部)</option><option value="P0">1688三档价</option><option value="P1">爆品竞价</option></select>
         <select id="tagFilter" onchange="applyFilters()"><option value="">更新时间(全部)</option></select>
         <!-- 新增：目标价格段筛选 -->
         <select id="priceRangeFilter" onchange="applyFilters()">
