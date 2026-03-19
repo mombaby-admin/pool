@@ -10,6 +10,21 @@
         .desc-box { background: rgba(255,255,255,0.2); padding: 10px; margin-top: 10px; border-radius: 4px; font-size: 14px; line-height: 1.6; }
         .filter-section { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         input, select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+        /* 重置按钮样式 */
+        .reset-btn { 
+            padding: 8px 16px; 
+            background: #fff; 
+            border: 1px solid #ee4d2d; 
+            color: #ee4d2d; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: all 0.2s;
+        }
+        .reset-btn:hover {
+            background: #ee4d2d;
+            color: white;
+        }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
         .card { background: white; border-radius: 8px; overflow: hidden; border: 1px solid #eee; transition: 0.3s; position: relative; display: flex; flex-direction: column; }
         .judge-tag { position: absolute; top: 10px; left: 10px; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; cursor: pointer; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -46,6 +61,15 @@
         <select id="l2Filter" onchange="applyFilters()"><option value="">三级类目(全部)</option></select>
         <select id="pFilter" onchange="applyFilters()"><option value="">P0/P1(全部)</option><option value="P0">P0</option><option value="P1">P1</option></select>
         <select id="tagFilter" onchange="applyFilters()"><option value="">特殊标签(全部)</option></select>
+        <!-- 新增：目标价格段筛选 -->
+        <select id="priceRangeFilter" onchange="applyFilters()">
+            <option value="">目标价格段(全部)</option>
+            <option value="0-5">0-5</option>
+            <option value="5-10">5-10</option>
+            <option value="10-20">10-20</option>
+            <option value="20-50">20-50</option>
+            <option value="50+">50+</option>
+        </select>
         <input type="number" id="minPrice" placeholder="最低价" oninput="debouncedFilter()">
         <input type="number" id="maxPrice" placeholder="最高价" oninput="debouncedFilter()">
         <select id="sortOrder" onchange="applyFilters()">
@@ -53,6 +77,8 @@
             <option value="priceAsc">价格升序</option>
             <option value="priceDesc">价格降序</option>
         </select>
+        <!-- 新增：重置筛选按钮 -->
+        <button class="reset-btn" onclick="resetFilters()">重置筛选</button>
         <span id="countDisplay" style="font-weight:bold; color:#ee4d2d; margin-left:auto;"></span>
     </div>
     <div class="product-grid" id="productGrid"></div>
@@ -183,12 +209,27 @@ card.innerHTML = `
         const l1 = document.getElementById('l1Filter').value, l2 = document.getElementById('l2Filter').value;
         const p = document.getElementById('pFilter').value, tag = document.getElementById('tagFilter').value;
         const min = parseFloat(document.getElementById('minPrice').value) || 0, max = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+        // 新增：处理价格段筛选逻辑
+        const priceRange = document.getElementById('priceRangeFilter').value;
+        let minRange = 0, maxRange = Infinity;
+        if (priceRange) {
+            const [start, end] = priceRange.split('-');
+            if (priceRange === '50+') {
+                minRange = 50;
+                maxRange = Infinity;
+            } else {
+                minRange = parseFloat(start) || 0;
+                maxRange = parseFloat(end) || Infinity;
+            }
+        }
         
         filteredData = products.filter(arr => {
             const i = mapData(arr);
+            // 新增：价格段筛选条件
+            const isInPriceRange = i.price >= minRange && i.price <= maxRange;
             return (i.title.toLowerCase().includes(q) || i.inviteId.toLowerCase().includes(q)) &&
                    (!l1 || i.l1 === l1) && (!l2 || i.l2 === l2) && (!p || i.judge === p) && 
-                   (!tag || i.specialTag === tag) && (i.price >= min && i.price <= max);
+                   (!tag || i.specialTag === tag) && (i.price >= min && i.price <= max) && isInPriceRange;
         });
         
         const sort = document.getElementById('sortOrder').value;
@@ -197,6 +238,23 @@ card.innerHTML = `
         
         document.getElementById('countDisplay').innerText = `已筛选：${filteredData.length} 款`;
         render(filteredData, 1);
+    }
+
+    // 新增：重置筛选函数
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('l1Filter').value = '';
+        document.getElementById('l2Filter').value = '';
+        document.getElementById('pFilter').value = '';
+        document.getElementById('tagFilter').value = '';
+        document.getElementById('priceRangeFilter').value = ''; // 重置价格段
+        document.getElementById('minPrice').value = '';
+        document.getElementById('maxPrice').value = '';
+        document.getElementById('sortOrder').value = 'default';
+        // 重新初始化二级类目下拉框
+        updateL2();
+        // 重新应用筛选（显示全部数据）
+        applyFilters();
     }
 
     function initFilters() {
@@ -246,4 +304,3 @@ card.innerHTML = `
 </div>
 </body>
 </html>
-</div>
