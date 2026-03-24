@@ -106,7 +106,18 @@
 <div id="imageModal" onclick="this.style.display='none'"><img id="modalImg" src=""></div>
 
 <script>
-    document.oncontextmenu = () => false;
+    // 全局禁用右键（只允许图片）
+    document.oncontextmenu = (e) => {
+        const target = e.target;
+        // 只有 <img> 标签允许右键
+        if (target.tagName === 'IMG') {
+            return true;
+        }
+        // 其他全部禁止
+        return false;
+    };
+
+    
     document.onkeydown = (e) => {
         if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) {
             return false;
@@ -175,7 +186,7 @@
 card.innerHTML = `
     <div class="judge-tag ${item.judge === 'p0' ? 'bg-p0' : 'bg-p1'}" onclick="checkLink('${item.link1688}')">${item.judge}</div>
     ${item.specialTag ? `<div class="special-tag">${item.specialTag}</div>` : ''}
-    <div class="img-container" ondblclick="document.getElementById('modalImg').src='${item.imgUrl}'; document.getElementById('imageModal').style.display='flex';">
+    <div class="img-container" onclick="document.getElementById('modalImg').src='${item.imgUrl}'; document.getElementById('imageModal').style.display='flex';">
         <img src="${item.imgUrl}" loading="lazy">
     </div>
     <div class="info">
@@ -186,7 +197,7 @@ card.innerHTML = `
         </div>
         <div class="invite-row">
             <div class="model-count-tag">${item.l2}</div>
-            <div class="invite-id-box" onclick="navigator.clipboard.writeText('${item.inviteId}'); alert('已复制ID: ${item.inviteId}')">${item.inviteId}</div>
+            <div class="invite-id-box" onclick="copyInviteId(this, '${item.inviteId}')">${item.inviteId}</div>  
         </div>
         <div class="footer-row">
             <span>${item.date}</span>
@@ -343,6 +354,46 @@ card.innerHTML = `
         
         [...new Set(list.map(p => p[16]))].forEach(v => { if(v) s.innerHTML += `<option value="${v}">${v}</option>`; }); 
     }
+
+    //新增了单击打开图片的函数，确保点击立刻响应
+    function openImage(imgUrl) {
+        document.getElementById('modalImg').src = imgUrl;
+        document.getElementById('imageModal').style.display = 'flex';
+    }
+
+    // 复制邀请ID - 修复多次点击无法复原问题
+function copyInviteId(el, inviteId) {
+    // 1. 先清除上一次的定时器（防止叠加）
+    if (el.copyTimer) clearTimeout(el.copyTimer);
+
+    // 2. 执行复制
+    navigator.clipboard.writeText(inviteId);
+
+    // 3. 保存原始样式（只保存一次）
+    if (!el.originalStyle) {
+        el.originalStyle = {
+            text: el.innerText,
+            bg: el.style.background,
+            color: el.style.color
+        };
+    }
+
+    // 4. 设置复制成功样式
+    el.style.background = "linear-gradient(90deg, #d4edda, #a8e6cf)";
+    el.style.color = "#2e7d32";
+    el.innerText = "已复制";
+
+    // 5. 1秒后恢复（每次都重新计时）
+    el.copyTimer = setTimeout(() => {
+        el.innerText = el.originalStyle.text;
+        el.style.background = el.originalStyle.bg;
+        el.style.color = el.originalStyle.color;
+    }, 1000);
+}
+    
+
+
+    
     
     let timer; 
     const debouncedFilter = () => { clearTimeout(timer); timer = setTimeout(applyFilters, 300); };
